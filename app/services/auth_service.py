@@ -13,7 +13,12 @@ class AuthService:
     _otp_storage = {}
 
     async def login_request(self, db: Session, phone: str):
-        print(f"DEBUG: login_request for phone=[{phone}]")
+        # Normalize: Take last 9 digits to prevent duplicates like +255 vs 0
+        phone = phone.replace("+", "").replace(" ", "")
+        if phone.startswith("255"): phone = phone[3:]
+        if phone.startswith("0"): phone = phone[1:]
+        
+        print(f"DEBUG: login_request for normalized phone=[{phone}]")
         otp = security.generate_otp()
         self._otp_storage[phone] = otp
         
@@ -30,6 +35,11 @@ class AuthService:
         return {"message": "OTP sent successfully"}
 
     async def verify_otp(self, db: Session, phone: str, otp: str):
+        # Normalize: Take last 9 digits
+        phone = phone.replace("+", "").replace(" ", "")
+        if phone.startswith("255"): phone = phone[3:]
+        if phone.startswith("0"): phone = phone[1:]
+
         print(f"DEBUG: verifying phone=[{phone}] otp=[{otp}] storage={self._otp_storage}")
         # Allow master code for testing/development
         is_master_code = (otp == "123456")

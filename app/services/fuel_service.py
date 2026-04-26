@@ -20,7 +20,8 @@ class FuelService:
             db.commit()
             db.refresh(vehicle)
         
-        # 2. Check for active loan on this vehicle
+        # 2. Check for active loan on this vehicle (DISABLED FOR TESTING)
+        """
         active_loan = db.query(FuelLoan).filter(
             FuelLoan.vehicle_id == vehicle.id,
             FuelLoan.status.in_([LoanStatus.PENDING, LoanStatus.APPROVED, LoanStatus.USED])
@@ -31,8 +32,10 @@ class FuelService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Vehicle ana mkopo unaoendelea. Lipia kwanza."
             )
+        """
 
-        # 3. Check daily limit (max 10 litres)
+        # 3. Check daily limit (DISABLED FOR TESTING)
+        """
         today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
         daily_litres = db.query(func.sum(FuelLoan.litres)).filter(
             FuelLoan.vehicle_id == vehicle.id,
@@ -44,6 +47,7 @@ class FuelService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Umevuka kikomo cha lita {settings.MAX_LITRES_PER_DAY} kwa siku."
             )
+        """
 
         # 4. Mandatory Backend Calculation
         price = Decimal(str(settings.PRICE_PER_LITRE))

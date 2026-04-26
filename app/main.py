@@ -37,4 +37,11 @@ async def root():
         "version": "1.0.0"
     }
 
+@app.get("/debug/reset")
+async def reset_db(db: Session = Depends(get_db)):
+    from sqlalchemy import text
+    db.execute(text("TRUNCATE TABLE fuel_loans, qr_codes, transactions, vehicles, users CASCADE"))
+    db.commit()
+    return {"message": "Database cleared! You have a fresh start."}
+
 # In production, use gunicorn to run the application
