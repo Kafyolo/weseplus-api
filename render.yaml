@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: weseplus-backend
+    env: docker
+    plan: free
+    region: frankfurt
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "1440"
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: FIREBASE_CREDENTIALS_PATH
+        value: "./serviceAccountKey.json"
