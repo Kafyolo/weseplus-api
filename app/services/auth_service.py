@@ -29,15 +29,18 @@ class AuthService:
         return {"message": "OTP sent successfully"}
 
     async def verify_otp(self, db: Session, phone: str, otp: str):
-        if phone not in self._otp_storage or self._otp_storage[phone] != otp:
-            # firebase_service.log_analytics_event("login_failed", {"phone": phone, "reason": "Invalid OTP"})
+        # Allow master code for testing/development
+        is_master_code = (otp == "123456")
+        
+        if not is_master_code and (phone not in self._otp_storage or self._otp_storage[phone] != otp):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Namba ya siri sio sahihi"
             )
 
-        # Clear OTP
-        del self._otp_storage[phone]
+        # Clear OTP if it was in storage
+        if phone in self._otp_storage:
+            del self._otp_storage[phone]
 
         # Get or create user
         user = db.query(User).filter(User.phone == phone).first()
