@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = Field(..., alias="SECRET_KEY")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
-    ALLOWED_ORIGINS: str = Field("http://localhost,http://localhost:3000,http://localhost:8000", alias="ALLOWED_ORIGINS")
+    ALLOWED_ORIGINS: str = Field("*", alias="ALLOWED_ORIGINS")
     
     # Firebase
     FIREBASE_CREDENTIALS_PATH: str = Field(..., alias="FIREBASE_CREDENTIALS_PATH")

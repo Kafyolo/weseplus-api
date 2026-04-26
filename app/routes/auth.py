@@ -16,6 +16,16 @@ async def login(request: LoginRequest, db: Session = Depends(get_db)):
 async def verify(request: VerifyRequest, db: Session = Depends(get_db)):
     return await auth_service.verify_otp(db, request.phone, request.otp)
 
+@router.get("/me")
+async def get_me(current_user: User = Depends(get_current_user)):
+    return {
+        "id": str(current_user.id),
+        "phone": current_user.phone,
+        "is_complete": current_user.full_name is not None,
+        "full_name": current_user.full_name,
+        "vehicle_number": current_user.vehicles[0].vehicle_number if current_user.vehicles else None
+    }
+
 @router.post("/register")
 async def register(
     request: ProfileUpdate, 
