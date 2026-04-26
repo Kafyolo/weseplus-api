@@ -13,6 +13,7 @@ class AuthService:
     _otp_storage = {}
 
     async def login_request(self, db: Session, phone: str):
+        print(f"DEBUG: login_request for phone=[{phone}]")
         otp = security.generate_otp()
         self._otp_storage[phone] = otp
         
@@ -29,6 +30,7 @@ class AuthService:
         return {"message": "OTP sent successfully"}
 
     async def verify_otp(self, db: Session, phone: str, otp: str):
+        print(f"DEBUG: verifying phone=[{phone}] otp=[{otp}] storage={self._otp_storage}")
         # Allow master code for testing/development
         is_master_code = (otp == "123456")
         
