@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.database import engine, Base
+from sqlalchemy.orm import Session
+from app.core.database import engine, Base, get_db
 from app.routes import auth, fuel, qr, repayment
 from app.core.config import settings
 
@@ -39,9 +40,10 @@ async def root():
 
 @app.get("/debug/reset")
 async def reset_db(db: Session = Depends(get_db)):
-    from sqlalchemy import text
-    db.execute(text("TRUNCATE TABLE fuel_loans, qr_codes, transactions, vehicles, users CASCADE"))
-    db.commit()
-    return {"message": "Database cleared! You have a fresh start."}
+    from app.core.database import engine, Base
+    # Drop all tables and recreate them to apply schema changes
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    return {"message": "Database RECREATED with new schema! You have a fresh start."}
 
 # In production, use gunicorn to run the application

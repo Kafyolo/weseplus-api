@@ -10,6 +10,8 @@ class Vehicle(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     vehicle_number = Column(String, unique=True, index=True, nullable=False)
+    vehicle_model = Column(String, nullable=True) # e.g. "Boxer 150"
+    carrier_name = Column(String, nullable=True) # e.g. "Bolt/Uber"
     verified = Column(Boolean, default=False)
 
     owner = relationship("User", back_populates="vehicles")

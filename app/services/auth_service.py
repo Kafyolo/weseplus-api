@@ -85,8 +85,34 @@ class AuthService:
             "token_type": "bearer",
             "user": {
                 "id": str(user.id),
-                "phone": user.phone
+                "phone": user.phone,
+                "is_complete": user.full_name is not None
             }
         }
+
+    async def update_profile(self, db: Session, user, request):
+        user.full_name = request.full_name
+        user.nin = request.nin
+        user.license_number = request.license_number
+        user.station_name = request.station_name
+        user.is_active = "ACTIVE"
+        
+        # Add or update vehicle
+        from app.models.vehicle import Vehicle
+        vehicle = db.query(Vehicle).filter(Vehicle.vehicle_number == request.vehicle_number).first()
+        if not vehicle:
+            vehicle = Vehicle(
+                user_id=user.id, 
+                vehicle_number=request.vehicle_number,
+                vehicle_model=request.vehicle_model,
+                verified=True
+            )
+            db.add(vehicle)
+        else:
+            vehicle.user_id = user.id
+            vehicle.vehicle_model = request.vehicle_model
+            
+        db.commit()
+        return {"message": "Profile updated successfully"}
 
 auth_service = AuthService()

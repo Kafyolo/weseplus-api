@@ -9,6 +9,11 @@ class User(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     phone = Column(String, unique=True, index=True, nullable=False)
+    full_name = Column(String, nullable=True)
+    nin = Column(String, unique=True, index=True, nullable=True)
+    license_number = Column(String, unique=True, index=True, nullable=True)
+    station_name = Column(String, nullable=True)
+    is_active = Column(String, default="PENDING_VERIFICATION")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     vehicles = relationship("Vehicle", back_populates="owner")

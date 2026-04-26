@@ -17,6 +17,14 @@ class Token(BaseModel):
     token_type: str
     user: dict
 
+class ProfileUpdate(BaseModel):
+    full_name: str
+    nin: str
+    license_number: str
+    station_name: str
+    vehicle_number: str
+    vehicle_model: Optional[str] = None
+
 # Fuel
 class FuelRequest(BaseModel):
     vehicle_number: str
