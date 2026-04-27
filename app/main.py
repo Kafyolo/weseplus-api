@@ -38,6 +38,12 @@ async def root():
         "version": "1.0.0"
     }
 
+from app.services.market_intelligence_service import market_intelligence
+
+@app.get("/market/outlook")
+async def get_market_outlook():
+    return market_intelligence.get_market_outlook()
+
 @app.get("/debug/reset")
 async def reset_db(db: Session = Depends(get_db)):
     from app.core.database import engine, Base
