@@ -92,10 +92,10 @@ class AuthService:
         }
 
     async def update_profile(self, db: Session, user, request):
-        user.full_name = request.full_name
-        user.nin = request.nin
-        user.license_number = request.license_number
-        user.station_name = request.station_name
+        user.full_name = request.full_name.strip()
+        user.nin = request.nin.strip()
+        user.license_number = request.license_number.strip()
+        user.station_name = request.station_name.strip()
         user.is_active = "ACTIVE"
         
         # Add or update vehicle
