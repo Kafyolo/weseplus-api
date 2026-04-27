@@ -11,6 +11,7 @@ class LoginRequest(BaseModel):
 class VerifyRequest(BaseModel):
     phone: str
     otp: str
+    firebase_id: Optional[str] = None
 
 class Token(BaseModel):
     access_token: str

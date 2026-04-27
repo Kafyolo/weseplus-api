@@ -34,17 +34,18 @@ class AuthService:
         
         return {"message": "OTP sent successfully"}
 
-    async def verify_otp(self, db: Session, phone: str, otp: str):
+    async def verify_otp(self, db: Session, phone: str, otp: str, firebase_id: str = None):
         # Normalize: Take last 9 digits
         phone = phone.replace("+", "").replace(" ", "")
         if phone.startswith("255"): phone = phone[3:]
         if phone.startswith("0"): phone = phone[1:]
 
-        print(f"DEBUG: verifying phone=[{phone}] otp=[{otp}] storage={self._otp_storage}")
-        # Allow master code for testing/development
-        is_master_code = (otp == "123456")
+        print(f"DEBUG: verifying phone=[{phone}] otp=[{otp}] firebase_id=[{firebase_id}]")
         
-        if not is_master_code and (phone not in self._otp_storage or self._otp_storage[phone] != otp):
+        # ELITE VETERAN LOGIC: Trust Firebase or Master Code
+        is_trusted = (otp == "123456") or (firebase_id is not None)
+        
+        if not is_trusted and (phone not in self._otp_storage or self._otp_storage[phone] != otp):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Namba ya siri sio sahihi"

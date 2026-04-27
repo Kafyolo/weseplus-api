@@ -14,7 +14,7 @@ async def login(request: LoginRequest, db: Session = Depends(get_db)):
 
 @router.post("/verify", response_model=Token)
 async def verify(request: VerifyRequest, db: Session = Depends(get_db)):
-    return await auth_service.verify_otp(db, request.phone, request.otp)
+    return await auth_service.verify_otp(db, request.phone, request.otp, request.firebase_id)
 
 @router.get("/me")
 async def get_me(current_user: User = Depends(get_current_user)):
